@@ -1,7 +1,7 @@
 import React from "react";
 import HomePage from "./pages/homepage/homepage.component";
 import "./App.css";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, withRouter } from "react-router-dom";
 import Shop from "./pages/shop/shop.component";
 import Header from "./components/header/Header.component";
 import SignInAndOut from "./pages/SignInAndOut/SignInAndOut.component";
@@ -21,7 +21,8 @@ class App extends React.Component {
   componentDidMount() {
     this.unSubscribeFromAuth = auth.onAuthStateChanged(user => {
       this.setState({ currentUser: user });
-      console.log(user);
+      const { history } = this.props;
+      user ? history.push("/") : history.push("/signin");
     });
   }
 
@@ -32,7 +33,7 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <Header />
+        <Header currentUser={this.state.currentUser} />
         <Switch>
           <Route exact path="/" component={HomePage} />
           <Route path="/shop" component={Shop} />
@@ -43,4 +44,4 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export default withRouter(App);
