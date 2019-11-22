@@ -1,11 +1,11 @@
 import React from "react";
 import HomePage from "./pages/homepage/homepage.component";
 import "./App.css";
-import { Switch, Route, withRouter } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import Shop from "./pages/shop/shop.component";
 import Header from "./components/header/Header.component";
 import SignInAndOut from "./pages/SignInAndOut/SignInAndOut.component";
-import { auth } from "./firebase/firebase";
+import { auth, createUserProfileDocument } from "./firebase/firebase";
 
 class App extends React.Component {
   constructor(props) {
@@ -19,10 +19,22 @@ class App extends React.Component {
   unSubscribeFromAuth = null;
 
   componentDidMount() {
-    this.unSubscribeFromAuth = auth.onAuthStateChanged(user => {
-      this.setState({ currentUser: user });
-      const { history } = this.props;
-      user ? history.push("/") : history.push("/signin");
+    this.unSubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
+      if (userAuth) {
+        const userRef = await createUserProfileDocument(userAuth);
+
+        userRef.onSnapshot(snapshot => {
+          console.log(snapshot, snapshot.data());
+          this.setState({
+            currentUser: {
+              id: snapshot.id,
+              ...snapshot.data()
+            }
+          });
+        });
+      } else {
+        this.setState({ currentUser: userAuth });
+      }
     });
   }
 
@@ -44,4 +56,4 @@ class App extends React.Component {
   }
 }
 
-export default withRouter(App);
+export default App;
