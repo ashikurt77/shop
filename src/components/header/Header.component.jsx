@@ -3,7 +3,11 @@ import { Link } from "react-router-dom";
 import { ReactComponent as Logo } from "../../assests/crown.svg";
 import "./Header.styles.scss";
 import { auth } from "../../firebase/firebase";
+
 import { connect } from "react-redux";
+
+import CartIcon from "../cart-icon/CartIcon.component";
+import CartDropdown from "../cart-dropdown/CartDropdown.component";
 
 const Header = ({ currentUser }) => {
   return (
@@ -29,14 +33,17 @@ const Header = ({ currentUser }) => {
             Sign In
           </Link>
         )}
+        <CartIcon />
       </div>
+      <CartDropdown />
     </div>
   );
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = ({ user, isCartDropdownHidden }) => {
   return {
-    currentUser: state.user.currentUser
+    currentUser: user.currentUser,
+    isCartDropdownHidden: isCartDropdownHidden.hidden
   };
 };
 
