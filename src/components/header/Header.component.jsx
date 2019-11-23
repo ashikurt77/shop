@@ -40,10 +40,9 @@ const Header = ({ currentUser }) => {
   );
 };
 
-const mapStateToProps = ({ user, isCartDropdownHidden }) => {
+const mapStateToProps = ({ user }) => {
   return {
-    currentUser: user.currentUser,
-    isCartDropdownHidden: isCartDropdownHidden.hidden
+    currentUser: user.currentUser
   };
 };
 
